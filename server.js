@@ -12,6 +12,13 @@ app.get('/lessons',async(req,res)=>{
     res.json(lessons);
 });
 
+app.use((req,res,next)=>{
+    res.setHeader('Access-Control-Allow-Origin','*');
+    res.setHeader('Access-Control-Allow-Methods','GET','POST','PUT','OPTIONS');
+    res.setHeader('Acces-Control-Allow-Headers','Content-Type');
+    next();
+})
+
 client.connect().then(()=>{
     db = client.db('afterschool');
     app.listen(PORT,() => console.log('Server running on Port ${PORT}'));
