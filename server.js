@@ -1,5 +1,6 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -24,6 +25,12 @@ app.use((req,res,next)=>{
     });
     next();
 })
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.use('/images',(req,res)=>{
+    res.status(404).json({error: 'Image not found' });
+});
 
 app.get('/lessons',async(req,res)=>{
     const lessons = await db.collection('lessons').find({}).toArray();
