@@ -46,6 +46,19 @@ app.post('/orders',async(req,res)=>{
     res.status(201).json({message: 'Order saved', id: result.insertedID});
 });
 
+app.put('lessons/:id', async(req,res)=>{
+    if (!ObjectId.isValid(req.params.id)){
+        return res.status(400).json({error: 'Invalid lesson id'});
+    }
+    const result = await db.collection('lessons').updateOne(
+    { _id: new ObjectId(req.params.id) }, { $set: req.body });
+    
+    if (result.matchedCount === 0){
+        return res.status(404).json({error: 'Lesson not found'})
+    }
+    res.json({message: 'Lesson updated'});
+});
+
 
 
 client.connect().then(()=>{
