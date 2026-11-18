@@ -43,10 +43,10 @@ app.post('/orders',async(req,res)=>{
         return res.status(400).json({error: 'Name,Phone and Lessons are required'})
     };
     const result = await db.collection('orders').insertOne(order);
-    res.status(201).json({message: 'Order saved', id: result.insertedID});
+    res.status(201).json({message: 'Order saved', id: result.insertedId});
 });
 
-app.put('lessons/:id', async(req,res)=>{
+app.put('/lessons/:id', async(req,res)=>{
     if (!ObjectId.isValid(req.params.id)){
         return res.status(400).json({error: 'Invalid lesson id'});
     }
