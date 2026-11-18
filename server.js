@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const path = require('path');
 
 const app = express();
@@ -35,6 +35,15 @@ app.use('/images',(req,res)=>{
 app.get('/lessons',async(req,res)=>{
     const lessons = await db.collection('lessons').find({}).toArray();
     res.json(lessons);
+});
+
+app.post('/orders',async(req,res)=>{
+    const order = req.body;
+    if (!order.name || !order.phone || !Array.isArray(order.lessons)){
+        return res.status(400).json({error: 'Name,Phone and Lessons are required'})
+    };
+    const result = await db.collection('orders').insertOne(order);
+    res.status(201).json({message: 'Order saved', id: result.insertedID});
 });
 
 
