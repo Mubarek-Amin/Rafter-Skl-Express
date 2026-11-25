@@ -46,6 +46,19 @@ app.post('/orders',async(req,res)=>{
     res.status(201).json({message: 'Order saved', id: result.insertedId});
 });
 
+app.get('/enrolment/:lessonid',async (req,res)=>{
+    const lessonId = req.params.lessonid;
+    const result = await db.collection('orders').aggregate([
+        {$unwind: '$lessons'},
+        {$match: {'lessons.lessonId':lessonId}},
+        {$group: {_id: $lessons.lessonId, enrolled: {$sum: '$lessons.spaces'}}}
+    ]).toArray();
+    
+    const enrolled = result.length > 0 ? result[0].enrolled : 0;
+    res.json({lessonId: lessonId, enrolled: enrolled});
+
+});
+
 app.put('/lessons/:id', async(req,res)=>{
     if (!ObjectId.isValid(req.params.id)){
         return res.status(400).json({error: 'Invalid lesson id'});
