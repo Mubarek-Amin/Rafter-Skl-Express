@@ -69,10 +69,10 @@ app.get('/search', async(req,res)=>{
 
     const lessons = await db.collection('lessons').find({
         $or: [
-            {$topic: regex},
-            {$location: regex},
-            {$expr: {$regexMatch: {$input: {$toString: '$price'},regex: safe, options: 'i'}}},
-            {$expr: {$regexMatch: {$input: {$toString: '$space'},regex: safe, options: 'i'}}}
+            {topic: regex},
+            {location: regex},
+            {$expr: {$regexMatch: {$nput: {$toString: '$price'},regex: safe, options: 'i'}}},
+            {$expr: {$regexMatch: {input: {$toString: '$space'},regex: safe, options: 'i'}}}
         ]
     }).toArray();
     res.json(lessons);
