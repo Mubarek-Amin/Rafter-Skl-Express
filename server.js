@@ -59,6 +59,25 @@ app.get('/enrolment/:lessonid',async (req,res)=>{
 
 });
 
+app.get('/search', async(req,res)=>{
+    const q = (req.query.q || '').trim();
+    if ( q === ''){
+        return res.json(await db.collection('lessons').find({}).toArray());
+    }
+    const safe = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(safe, 'i');
+
+    const lessons = await db.collection('lessons').find({
+        $or: [
+            {$topic: regex},
+            {$location: regex},
+            {$expr: {$regexMatch: {$input: {$toString: '$price'},regex: safe, options: 'i'}}},
+            {$expr: {$regexMatch: {$input: {$toString: '$space'},regex: safe, options: 'i'}}}
+        ]
+    }).toArray();
+    res.json(lessons);
+});
+
 app.put('/lessons/:id', async(req,res)=>{
     if (!ObjectId.isValid(req.params.id)){
         return res.status(400).json({error: 'Invalid lesson id'});
