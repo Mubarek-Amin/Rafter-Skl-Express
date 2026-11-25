@@ -51,7 +51,7 @@ app.get('/enrolment/:lessonid',async (req,res)=>{
     const result = await db.collection('orders').aggregate([
         {$unwind: '$lessons'},
         {$match: {'lessons.lessonId':lessonId}},
-        {$group: {_id: $lessons.lessonId, enrolled: {$sum: '$lessons.spaces'}}}
+        {$group: {_id: '$lessons.lessonId', enrolled: {$sum: '$lessons.spaces'}}}
     ]).toArray();
     
     const enrolled = result.length > 0 ? result[0].enrolled : 0;
