@@ -71,7 +71,7 @@ app.get('/search', async(req,res)=>{
         $or: [
             {topic: regex},
             {location: regex},
-            {$expr: {$regexMatch: {$input: {$toString: '$price'},regex: safe, options: 'i'}}},
+            {$expr: {$regexMatch: {input: {$toString: '$price'},regex: safe, options: 'i'}}},
             {$expr: {$regexMatch: {input: {$toString: '$space'},regex: safe, options: 'i'}}}
         ]
     }).toArray();
