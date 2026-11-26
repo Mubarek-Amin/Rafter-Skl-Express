@@ -91,6 +91,20 @@ app.put('/lessons/:id', async(req,res)=>{
     res.json({message: 'Lesson updated'});
 });
 
+app.get('/teachers', async(req,res)=>{
+    const teachers = await db.collection('teachers').find({}).toArray();
+    res.json(teachers);
+});
+
+app.get('/teachers/:id/lessons',async(req,res)=>{
+    if (!ObjectId.isValid(req.params.id)) return res.status(400).json({error: 'Invalid teacher id'});
+    const teacher = await db.collection('teachers').findOne({_id: new ObjectId(req.params.id)});
+    if (!teacher) return res.status(404).json({error: 'Teacher not found'});
+    const lessons = await db.collection('lessons').find({_id: {$in: teacher.lessondIds}}).toArray();
+    res.json(lessons)
+    
+})
+
 
 
 client.connect().then(()=>{
